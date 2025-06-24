@@ -2,6 +2,7 @@
 import User from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
 
+
 export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId).select('-password');
@@ -66,6 +67,18 @@ export const changePassword = async (req, res) => {
 
   } catch (err) {
     console.error('Şifrə dəyişmə xətası:', err);
+    res.status(500).json({ message: 'Server xətası' });
+  }
+};
+
+
+
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, '_id name email');
+    res.json({ users, currentUserId: req.userId });
+  } catch (error) {
     res.status(500).json({ message: 'Server xətası' });
   }
 };

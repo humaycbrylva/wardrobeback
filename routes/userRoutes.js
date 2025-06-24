@@ -5,6 +5,7 @@ import { verifyToken } from '../middleware/verifyToken.js';
 import multer from 'multer';
 import { updateProfile } from '../controllers/userController.js';
 import { changePassword } from '../controllers/userController.js';
+import { getAllUsers } from '../controllers/userController.js';
 
 
 const router = express.Router();
@@ -20,6 +21,9 @@ const upload = multer({ storage });
 router.put('/update', verifyToken, upload.single('profileImage'), updateProfile);
 
 router.put('/change-password', verifyToken, changePassword);
+
+router.get('/all', verifyToken, getAllUsers);
+
 
 
 export default router;
