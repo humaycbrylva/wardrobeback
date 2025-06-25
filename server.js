@@ -5,6 +5,7 @@ import cors from 'cors';
 import path from 'path';
 import http from 'http';
 import { Server } from 'socket.io';
+
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
@@ -14,9 +15,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS ayarı
+// CORS ayarları
 app.use(cors({
-  origin: 'http://localhost:5177',
+  origin: 'http://localhost:5173',
   credentials: true,
 }));
 
@@ -37,7 +38,7 @@ mongoose.connect(process.env.MONGO_URI)
 
     const io = new Server(server, {
       cors: {
-        origin: 'http://localhost:5177',
+        origin: 'http://localhost:5173',
         methods: ['GET', 'POST'],
         credentials: true,
         transports: ['websocket', 'polling'],
@@ -58,21 +59,20 @@ mongoose.connect(process.env.MONGO_URI)
         onlineUsers.set(userId, socket.id);
         console.log('✅ addUser ilə əlavə edildi:', userId);
         console.log('🔵 Online istifadəçilər:', [...onlineUsers.entries()]);
+
+        // ✅ Online istifadəçiləri fronta göndər
+        io.emit('onlineUsers', Array.from(onlineUsers.keys()));
       });
 
       socket.on('sendMessage', (data) => {
         console.log('📤 Gələn mesaj:', data);
         const receiverSocketId = onlineUsers.get(data.receiverId);
 
-        console.log('🎯 Axtarılan receiverId:', data.receiverId);
-        console.log('📡 Mövcud onlineUsers:', [...onlineUsers.entries()]);
-        console.log('🎯 receiverSocketId tapıldı:', receiverSocketId);
-
         if (receiverSocketId) {
           io.to(receiverSocketId).emit('receiveMessage', data);
           console.log('✅ Mesaj göndərildi:', data.text);
         } else {
-          console.log('⚠️ receiverSocketId tapılmadı – istifadəçi offline və ya userId səhvdir');
+          console.log('⚠️ İstifadəçi offline və ya tapılmadı');
         }
       });
 
@@ -84,6 +84,9 @@ mongoose.connect(process.env.MONGO_URI)
             break;
           }
         }
+
+        // ✅ Yenilənmiş online user listini fronta göndər
+        io.emit('onlineUsers', Array.from(onlineUsers.keys()));
         console.log('❌ Socket bağlantısı kəsildi:', socket.id);
       });
     });

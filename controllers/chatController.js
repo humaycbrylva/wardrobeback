@@ -44,3 +44,49 @@ export const getMessages = async (req, res) => {
     res.status(500).json({ message: 'Server xətası' });
   }
 };
+
+
+// Mesaj sil
+export const deleteMessage = async (req, res) => {
+  try {
+    const messageId = req.params.id;
+    const userId = req.userId;
+
+    const message = await Message.findById(messageId);
+    if (!message) return res.status(404).json({ message: 'Mesaj tapılmadı' });
+
+    if (message.sender.toString() !== userId) {
+      return res.status(403).json({ message: 'Bu mesajı yalnız göndərən silə bilər' });
+    }
+
+    await Message.findByIdAndDelete(messageId);
+    res.status(200).json({ message: 'Mesaj silindi' });
+  } catch (err) {
+    console.error('Mesaj silinmə xətası:', err);
+    res.status(500).json({ message: 'Server xətası' });
+  }
+};
+
+
+export const updateMessage = async (req, res) => {
+  try {
+    const messageId = req.params.id;
+    const { text } = req.body;
+
+    const message = await Message.findById(messageId);
+    if (!message) return res.status(404).json({ message: 'Mesaj tapılmadı' });
+
+    if (message.sender.toString() !== req.userId) {
+      return res.status(403).json({ message: 'Bu mesajı düzəltmək icazəniz yoxdur' });
+    }
+
+    message.text = text;
+    message.isEdited = true; // modeldə `isEdited` adıdır
+    await message.save();
+
+    res.status(200).json({ message: 'Mesaj uğurla yeniləndi' });
+  } catch (err) {
+    console.error('Mesaj düzəlişi xətası:', err);
+    res.status(500).json({ message: 'Server xətası' });
+  }
+};

@@ -76,11 +76,12 @@ export const changePassword = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, '_id name email');
+    const users = await User.find({}, '_id name profileImage ');
     res.json({ users, currentUserId: req.userId });
   } catch (error) {
     res.status(500).json({ message: 'Server xətası' });
   }
 };
+
 
 
