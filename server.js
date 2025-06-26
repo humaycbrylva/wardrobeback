@@ -9,6 +9,7 @@ import { Server } from 'socket.io';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import closetRoutes from './routes/closetRoutes.js';
 
 dotenv.config();
 
@@ -23,11 +24,15 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/uploads', express.static(path.resolve('uploads')));
+app.use('/closet', express.static(path.resolve('closet')));
+
 
 // ROUTES
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/messages', chatRoutes);
+app.use('/api/closet', closetRoutes);
+
 
 // MONGODB
 mongoose.connect(process.env.MONGO_URI)
