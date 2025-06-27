@@ -32,6 +32,7 @@ export const register = async (req, res) => {
       existingUser.otp = otp;
       existingUser.otpExpires = otpExpires;
       existingUser.profileImage = req.file?.filename;
+      
       await existingUser.save();
     } else {
       const newUser = new User({
@@ -130,6 +131,7 @@ export const login = async (req, res) => {
         gender: user.gender,
         style: user.style,
         profileImage: user.profileImage,
+        isAdmin: user.isAdmin,
       },
     });
 

@@ -10,6 +10,7 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import closetRoutes from './routes/closetRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
 
@@ -32,6 +33,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/messages', chatRoutes);
 app.use('/api/closet', closetRoutes);
+
+
+app.use('/api/admin', adminRoutes);
 
 
 // MONGODB

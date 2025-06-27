@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
   resetToken: String,
   resetTokenExpires: Date,
-
-});
+  isAdmin: { type: Boolean, default: false }, 
+},{timestamps:true});
 
 export default mongoose.model('User', userSchema);
 
