@@ -15,7 +15,8 @@ export const verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('✅ Decoded token:', decoded); // DEBUG: decoded obyekt
-    req.userId = decoded.id; // Əgər decoded.id undefined-dirsə → problem login token strukturundadır
+    req.userId = decoded.id;
+    req.user = decoded;  // Əgər decoded.id undefined-dirsə → problem login token strukturundadır
     next();
   } catch (err) {
     console.error('❌ Token yoxlanılmadı:', err.message);

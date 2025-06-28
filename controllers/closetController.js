@@ -53,10 +53,12 @@ export const deleteClothingItem = async (req, res) => {
     const item = await ClosetItem.findById(req.params.id);
     if (!item) return res.status(404).json({ message: 'Tapılmadı' });
 
-    if (item.user.toString() !== req.userId) {
+    // 🛡️ Admin və ya sahibi silə bilər
+    if (item.user.toString() !== req.userId && !req.user?.isAdmin) {
       return res.status(403).json({ message: 'İcazə yoxdur' });
     }
 
+    // Şəkli sil
     if (item.image) {
       const imagePath = path.join(__dirname, '../closet', item.image);
       fs.unlink(imagePath, (err) => {
@@ -71,6 +73,7 @@ export const deleteClothingItem = async (req, res) => {
     res.status(500).json({ message: 'Server xətası' });
   }
 };
+
 
 export const editClothingItem = async (req, res) => {
   try {

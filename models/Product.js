@@ -8,6 +8,9 @@ const productSchema = new mongoose.Schema({
     ref: 'Category',
   },
   images: [String],
+  brand: { type: String, default: '' },   // ✅ əlavə olundu
+  size: { type: String, default: '' },    // ✅ əlavə olundu
+  color: { type: String, default: '' },   // ✅ əlavə olundu
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -15,3 +18,4 @@ const productSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 export default mongoose.model('Product', productSchema);
+
