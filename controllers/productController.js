@@ -3,7 +3,7 @@ import Product from '../models/Product.js';
 // Məhsul əlavə et
 export const addProduct = async (req, res) => {
   try {
-    const { title, description, category, brand, size, color } = req.body;
+    const { title, category, brand, size, color } = req.body;
     const userId = req.userId;
     const images = req.files ? req.files.map(file => file.filename) : [];
 
@@ -13,7 +13,6 @@ export const addProduct = async (req, res) => {
 
     const newProduct = await Product.create({
       title,
-      description,
       category,
       brand,
       size,

@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: String,
+  title: { type: String, required: false },
   category: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Category',
   },
   images: [String],
@@ -12,7 +11,7 @@ const productSchema = new mongoose.Schema({
   size: { type: String, default: '' },    // ✅ əlavə olundu
   color: { type: String, default: '' },   // ✅ əlavə olundu
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
   },
 }, { timestamps: true });
