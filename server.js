@@ -11,7 +11,9 @@ import userRoutes from './routes/userRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import closetRoutes from './routes/closetRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
-import productRoutes from './routes/productRoutes.js'
+import productRoutes from './routes/productRoutes.js';
+import trendRoutes from './routes/TrendRoutes.js'; // ⬅️ Əlavə et
+import contactRoutes from './routes/contactRoutes.js'
 
 dotenv.config();
 
@@ -20,7 +22,7 @@ const PORT = process.env.PORT || 5000;
 
 // CORS ayarları
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:5174',
   credentials: true,
 }));
 
@@ -28,6 +30,9 @@ app.use(express.json());
 app.use('/uploads', express.static(path.resolve('uploads')));
 app.use('/closet', express.static(path.resolve('closet')));
 
+const __dirname = path.resolve(); // lazımdırsa yuxarıda bunu yaz
+
+app.use('/trending', express.static(path.join(__dirname, 'uploads/trending')));
 
 // ROUTES
 app.use('/api/auth', authRoutes);
@@ -35,21 +40,26 @@ app.use('/api/user', userRoutes);
 app.use('/api/messages', chatRoutes);
 app.use('/api/closet', closetRoutes);
 
-
 app.use('/api/admin', adminRoutes);
-app.use('/api/products', productRoutes); 
+app.use('/api/products', productRoutes);
 
+// mövcud digər `app.use()` altına bunu əlavə et:
+app.use('/api/trends', trendRoutes); // ⬅️ Bu olmasa route işləmir
+
+app.use('/api/contact', contactRoutes);
 
 // MONGODB
+let io; // burada elan edirik ki export edə bilək
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB bağlantısı uğurludur');
 
     const server = http.createServer(app);
 
-    const io = new Server(server, {
+    io = new Server(server, {
       cors: {
-        origin: 'http://localhost:5173',
+        origin: 'http://localhost:5174',
         methods: ['GET', 'POST'],
         credentials: true,
         transports: ['websocket', 'polling'],
@@ -111,3 +121,4 @@ mongoose.connect(process.env.MONGO_URI)
     console.error('❌ MongoDB bağlantı xətası:', err.message);
   });
 
+export { io }; // buranı əlavə et

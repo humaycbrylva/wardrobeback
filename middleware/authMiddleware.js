@@ -19,3 +19,12 @@ export const verifyToken = async (req, res, next) => {
     return res.status(403).json({ message: 'Token yanlışdır və ya vaxtı bitib' });
   }
 };
+
+// Admin yoxlaması üçün middleware
+export const isAdmin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.status(403).json({ message: 'Admin icazəsi tələb olunur' });
+  }
+};
