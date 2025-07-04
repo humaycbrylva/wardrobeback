@@ -14,6 +14,8 @@ import adminRoutes from './routes/adminRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import trendRoutes from './routes/TrendRoutes.js'; // ⬅️ Əlavə et
 import contactRoutes from './routes/contactRoutes.js'
+import suggestionRoutes from './routes/suggestionRoutes.js'
+
 
 dotenv.config();
 
@@ -22,7 +24,7 @@ const PORT = process.env.PORT || 5000;
 
 // CORS ayarları
 app.use(cors({
-  origin: 'http://localhost:5174',
+  origin: 'http://localhost:5173',
   credentials: true,
 }));
 
@@ -32,7 +34,9 @@ app.use('/closet', express.static(path.resolve('closet')));
 
 const __dirname = path.resolve(); // lazımdırsa yuxarıda bunu yaz
 
+
 app.use('/trending', express.static(path.join(__dirname, 'uploads/trending')));
+app.use('/gallery', express.static(path.join(__dirname, 'uploads/gallery')));
 
 // ROUTES
 app.use('/api/auth', authRoutes);
@@ -48,6 +52,16 @@ app.use('/api/trends', trendRoutes); // ⬅️ Bu olmasa route işləmir
 
 app.use('/api/contact', contactRoutes);
 
+import plannerRoutes from './routes/plannerRoutes.js';
+
+app.use('/api/planner', plannerRoutes);
+
+
+app.use('/api/suggestions', suggestionRoutes);
+
+
+
+
 // MONGODB
 let io; // burada elan edirik ki export edə bilək
 
@@ -59,7 +73,7 @@ mongoose.connect(process.env.MONGO_URI)
 
     io = new Server(server, {
       cors: {
-        origin: 'http://localhost:5174',
+        origin: 'http://localhost:5173',
         methods: ['GET', 'POST'],
         credentials: true,
         transports: ['websocket', 'polling'],
